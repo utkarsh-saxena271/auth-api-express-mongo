@@ -6,7 +6,6 @@ const router = express.Router()
 
 router.post('/register',async (req,res)=>{
     const {username, password} = req.body
-
     const user  = await userModel.create({
         username,password
     })
@@ -16,10 +15,11 @@ router.post('/register',async (req,res)=>{
 
     },process.env.JWT_SECRET)
 
+    res.cookie("token",token)
+
     res.status(201).json({
         message:"user registered successfully",
-        user,
-        token
+        user
     })
 })
 router.post("/login",async (req,res)=>{
@@ -46,7 +46,7 @@ router.post("/login",async (req,res)=>{
         })
 })
 router.get("/user",async (req,res)=>{
-    const {token} = req.body
+    const {token} = req.cookies
 
     if(!token){
         return res.status(401).json({
